@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<!-- ✅ Mobile Fullscreen -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000">
+
+<title>Happy Birthday 🎂</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('furina.jpg') no-repeat center center/cover;
+    color: white;
+}
+
+/* FULLSCREEN CENTER */
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+}
+
+/* TEXT */
+p {
+    font-size: 4vw;
+    max-width: 90%;
+    color: #87CEEB;
+    font-weight: bold;
+}
+
+/* RAINBOW TITLE */
+h1 {
+    font-size: 8vw;
+}
+
+.rainbow-text span {
+    animation: rainbow 2s infinite;
+}
+
+@keyframes rainbow {
+    0% { color: red; }
+    20% { color: orange; }
+    40% { color: yellow; }
+    60% { color: green; }
+    80% { color: blue; }
+    100% { color: violet; }
+}
+
+/* CAKE */
+.cake {
+    margin-top: 30px;
+}
+
+.candle {
+    position: relative;
+    width: 3vw;
+    height: 12vw;
+    background: linear-gradient(to right, #fff, #ddd, #fff);
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.wick {
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    width: 2px;
+    height: 6px;
+    background: black;
+    transform: translateX(-50%);
+}
+
+.flame {
+    position: absolute;
+    top: -8vw;
+    left: 50%;
+    width: 4vw;
+    height: 8vw;
+    background: radial-gradient(circle, #fff 0%, #ffcc00 40%, #ff6600 70%);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    animation: flicker 0.15s infinite alternate;
+}
+
+@keyframes flicker {
+    from { transform: translateX(-50%) scale(1); }
+    to { transform: translateX(-50%) scale(1.1); }
+}
+
+/* SMOKE */
+.smoke {
+    position: absolute;
+    top: -8vw;
+    left: 50%;
+    width: 4vw;
+    height: 6vw;
+    background: rgba(200,200,200,0.5);
+    border-radius: 50%;
+    transform: translateX(-50%);
+    animation: smokeUp 2s forwards;
+}
+
+@keyframes smokeUp {
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-40px) scale(2);
+    }
+}
+
+/* BUTTON */
+button {
+    margin-top: 30px;
+    font-size: 4vw;
+    padding: 10px 20px;
+    border: none;
+    background: white;
+    color: #ff0080;
+    border-radius: 20px;
+}
+
+/* CANVAS */
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<p>
+	You act all innocent... but you have no idea how much effect you have on me. It's kinda funny how a simple message
+	from you can randomly make my day a bit better. And yeah... I've noticed i smiled at my phone a little more than 
+	usual when u text me. Not saying it's your fault... but I'm also not saying it isn't. Anyways, I'll let you stay unaware
+	for your "powers" for now...
+</p>
+
+<h1 class="rainbow-text">
+<span>H</span><span>a</span><span>p</span><span>p</span><span>y</span>
+<span> </span>
+<span>B</span><span>i</span><span>r</span><span>t</span><span>h</span><span>d</span><span>a</span><span>y</span>
+<span>!</span>
+</h1>
+
+<div class="cake">
+    <div class="candle"><div class="wick"></div><div class="flame"></div></div>
+    <div class="candle"><div class="wick"></div><div class="flame"></div></div>
+    <div class="candle"><div class="wick"></div><div class="flame"></div></div>
+    <div class="candle"><div class="wick"></div><div class="flame"></div></div>
+</div>
+
+<button onclick="blowCandles()">💨 Blow Candles</button>
+
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let confetti = [];
+let rockets = [];
+let fireworks = [];
+
+/* CONFETTI */
+function createConfetti() {
+    for (let i = 0; i < 300; i++) {
+        confetti.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * -canvas.height,
+            size: Math.random() * 6,
+            speed: Math.random() * 3 + 2,
+            color: `hsl(${Math.random()*360},100%,60%)`
+        });
+    }
+}
+
+/* ROCKET */
+function launchRocket() {
+    rockets.push({
+        x: Math.random() * canvas.width,
+        y: canvas.height,
+        target: Math.random() * canvas.height / 2,
+        speed: 3,
+        exploded: false
+    });
+}
+
+/* HEART FIREWORK */
+function explode(x, y) {
+    for (let i = 0; i < 100; i++) {
+        let t = Math.random() * Math.PI * 2;
+        let dx = 16 * Math.pow(Math.sin(t), 3);
+        let dy = -(13 * Math.cos(t) - 5*Math.cos(2*t) - 2*Math.cos(3*t) - Math.cos(4*t));
+
+        fireworks.push({
+            x, y,
+            dx: dx * 0.2,
+            dy: dy * 0.2,
+            alpha: 1,
+            color: `hsl(${Math.random()*360},100%,60%)`
+        });
+    }
+}
+
+/* ANIMATION */
+function animate() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // confetti
+    confetti.forEach(p=>{
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x,p.y,p.size,p.size);
+        p.y += p.speed;
+    });
+
+    // rockets
+    rockets.forEach(r=>{
+        if(!r.exploded){
+            ctx.fillStyle="white";
+            ctx.fillRect(r.x,r.y,6,6);
+            r.y -= r.speed;
+
+            if(r.y <= r.target){
+                explode(r.x,r.y);
+                r.exploded = true;
+            }
+        }
+    });
+
+    // fireworks
+    fireworks.forEach((f,i)=>{
+        ctx.fillStyle=f.color;
+        ctx.fillRect(f.x,f.y,2,2);
+        f.x += f.dx;
+        f.y += f.dy;
+        f.alpha -= 0.005;
+
+        if(f.alpha <= 0) fireworks.splice(i,1);
+    });
+
+    requestAnimationFrame(animate);
+}
+animate();
+
+/* BLOW */
+function blowCandles(){
+    document.querySelectorAll(".flame").forEach(f=>{
+        f.style.display="none";
+
+        let smoke=document.createElement("div");
+        smoke.className="smoke";
+        f.parentElement.appendChild(smoke);
+        setTimeout(()=>smoke.remove(),2000);
+    });
+
+    createConfetti();
+
+    for(let i=0;i<25;i++){
+        setTimeout(launchRocket,i*500);
+    }
+}
+</script>
+
+</body>
+</html>
