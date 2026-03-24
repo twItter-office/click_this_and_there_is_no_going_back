@@ -247,7 +247,7 @@ function animate() {
     // fireworks
     fireworks.forEach((f,i)=>{
         ctx.fillStyle=f.color;
-        ctx.fillRect(f.x,f.y,2,2);
+        ctx.fillRect(f.x,f.y,6,6);
         f.x += f.dx;
         f.y += f.dy;
         f.alpha -= 0.005;
